@@ -1,27 +1,44 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const cors = require("cors")
+const cors = require("cors");
+const helmet = require("helmet");
 require("dotenv").config();
-const app = express();
-// const allowedOrigins = [''];
 
+const app = express();
+const port = process.env.PORT || 5000;
+
+const allowedOrigins = ['https://task-management-stytem-07.netlify.app'];
+
+// Middlewares
+app.use(helmet());
 app.use(cors({
-  origin:'https://task-management-stytem-07.netlify.app',
- 
+  origin: allowedOrigins,
+  credentials: true
 }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const Routers = require("./routes/AdimnRoutes")
-const port = process.env.PORT || 5000;
-mongoose.connect(process.env.MONGO_DB).then(() => {
-    console.log("DB is Connected Successfully!");
+// Routes
+const AdminRouters = require("./routes/AdminRoutes");
+const UserRouters = require("./routes/AdminRoutes");
+app.use("/admin", AdminRouters);
+app.use("/user", UserRouters);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
-app.use("/admin",Routers);
-app.use("/user",Routers);
+// Database connection
+mongoose.connect(process.env.MONGO_DB)
+  .then(() => console.log("DB Connected Successfully!"))
+  .catch(err => {
+    console.error("DB Connection Error:", err);
+    process.exit(1);
+  });
 
 app.listen(port, () => {
-    console.log("Server is running on port 3000");
-})
+  console.log(`Server is running on port ${port}`);
+});
