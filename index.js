@@ -32,12 +32,8 @@ app.use((err, req, res, next) => {
 });
 
 // Database connection
-mongoose.connect(process.env.MONGO_DB)
-  .then(() => console.log("DB Connected Successfully!"))
-  .catch(err => {
-    console.error("DB Connection Error:", err);
-    process.exit(1);
-  });
+mongoose.connect(process.env.MONGO_DB).then(() => console.log("DB Connected Successfully!"))
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
