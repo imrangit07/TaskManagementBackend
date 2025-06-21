@@ -4,12 +4,11 @@ const bodyParser = require("body-parser");
 const cors = require("cors")
 require("dotenv").config();
 const app = express();
-const allowedOrigins = ['https://task-management-stytem-07.netlify.app'];
+// const allowedOrigins = [''];
 
 app.use(cors({
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  origin:'https://task-management-stytem-07.netlify.app',
+ 
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
